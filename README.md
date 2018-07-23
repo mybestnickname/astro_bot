@@ -1,1 +1,1 @@
-telegram bot with ephem library
+telegram bot that works with ephem library
