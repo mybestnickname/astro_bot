@@ -6,7 +6,6 @@ from settings import constells_dict
 from settingsbot import PROXY, TELEGRAM_API_KEY
 import ephem
 import datetime
-from datetime import time
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
@@ -20,7 +19,7 @@ def start_handler(bot, update):
     """
     username = update.message.from_user.username
     bot_text = (
-        'Привет {}. Для отображения списка команд /help .'.format(username))
+        'Привет {}. Для отображения списка команд используй: /help .'.format(username))
     # update.message.reply_text(bot_text)
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
 
@@ -76,11 +75,12 @@ def help_handler(bot, update):
     Выводит список доступных команд с описанием
     """
     bot_text = """
-    /help -
-    /planet -
-    /moon -
-    /sun -
-    /solar
+    /help - список команд
+    /planet - /planet [Имя планеты]* [y/m/d]* - выводит инфу за дату
+    /moon - текущая информация о луне
+    /sun - текущая информация о солнце в Москве
+    /solar - немного инфы о нашей солнечной системе
+    * - необязательный параметр
     """
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
 
@@ -97,8 +97,13 @@ def moon_handler(bot, update):
     full_moon_date = ephem.next_full_moon(ephem_date)
     moon_info = ephem.Moon(ephem_date)
     # создадим из них строку
-    bot_text = ('Луна растёт с {}\nПолнолуние наступит: {}\nЛуну видно на: {:.3f} %\nДистанция до земли: {:.3f} км.'
-                .format(growth_start_date, full_moon_date, moon_info.moon_phase * 100, moon_info.earth_distance * 149600000))
+    bot_text = ("""Луна растёт с {}
+        Полнолуние наступит: {}
+        Луну видно на: {:.3f} %
+        Дистанция до земли: {:.3f} км.""".format(growth_start_date,
+                                                 full_moon_date,
+                                                 moon_info.moon_phase * 100,
+                                                 moon_info.earth_distance * 149600000))
     # напишем её в чатик
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
 
@@ -118,7 +123,7 @@ def solar_system_handler(bot, update):
     custom_keyboard = [url_buttons[:5], url_buttons[5:10], url_buttons[10:]]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id,
-                     text="Выберите объект для изучения?:",
+                     text="Выберите объект для изучения:",
                      reply_markup=reply_markup)
 
 
@@ -173,7 +178,8 @@ def strange_command_handler(bot, update):
 
 def constellations_translator(const_name):
     """
-    Возвращает русское название по словарю созвезний или тоже самое, если нет в словаре
+    Возвращает русское название по словарю созвезний или тоже самое,
+    если нет в словаре
     """
     return constells_dict.get(const_name, const_name)
 
@@ -182,7 +188,7 @@ def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
     updt = Updater(TELEGRAM_API_KEY)
     updt.start_polling()
-# лучше отлавливать команды декораторами, наверное.
+    # лучше отлавливать команды декораторами, наверное.
     updt.dispatcher.add_handler(CommandHandler("start", start_handler))
     updt.dispatcher.add_handler(CommandHandler("planet", planet_handler))
     updt.dispatcher.add_handler(CommandHandler("moon", moon_handler))
