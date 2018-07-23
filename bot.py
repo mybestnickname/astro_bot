@@ -118,7 +118,7 @@ def solar_system_handler(bot, update):
     custom_keyboard = [url_buttons[:5], url_buttons[5:10], url_buttons[10:]]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id,
-                     text="Выберите объект для изучения?",
+                     text="Выберите объект для изучения?:",
                      reply_markup=reply_markup)
 
 
@@ -180,11 +180,8 @@ def constellations_translator(const_name):
 
 def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
-    print('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS')
     updt = Updater(TELEGRAM_API_KEY)
-    print('blblblbl')
     updt.start_polling()
-    print('bblbllblbl2')
 # лучше отлавливать команды декораторами, наверное.
     updt.dispatcher.add_handler(CommandHandler("start", start_handler))
     updt.dispatcher.add_handler(CommandHandler("planet", planet_handler))
