@@ -76,10 +76,11 @@ def help_handler(bot, update):
     """
     bot_text = """
     /help - список команд
-    /planet - [Имя планеты]* [y/m/d]* - выводит инфу за дату
+    /planet - [Имя планеты]* [yyyy/mm/dd]* - выводит инфу за дату
     /moon - текущая информация о луне
     /sun - текущая информация о солнце в Москве
     /solar - немного инфы о нашей солнечной системе
+    /quiz - небольшая викторина
     * - необязательный параметр
     """
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
@@ -196,9 +197,9 @@ def main():
     updt.dispatcher.add_handler(CommandHandler("solar", solar_system_handler))
     updt.dispatcher.add_handler(CommandHandler("help", help_handler))
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
+    # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
-    updt.start_polling()
     updt.idle()
 
 
