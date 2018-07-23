@@ -181,8 +181,10 @@ def constellations_translator(const_name):
 def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
     print('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS')
-    updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
+    updt = Updater(TELEGRAM_API_KEY)
+    print('blblblbl')
     updt.start_polling()
+    print('bblbllblbl2')
 # лучше отлавливать команды декораторами, наверное.
     updt.dispatcher.add_handler(CommandHandler("start", start_handler))
     updt.dispatcher.add_handler(CommandHandler("planet", planet_handler))
