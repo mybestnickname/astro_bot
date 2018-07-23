@@ -180,6 +180,7 @@ def constellations_translator(const_name):
 
 def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
+    print('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS')
     updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
     updt.start_polling()
 # лучше отлавливать команды декораторами, наверное.
