@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from model import User, Question
+from base import Session, engine, Base
 import logging
 from settings import constells_dict
 from settingsbot import PROXY, TELEGRAM_API_KEY
@@ -224,6 +226,16 @@ def quiz_offer_handler(bot, update):
     query = update.callback_query
     if query.data == "quiz_offer ok":
         bot.answer_callback_query(query.id, text='QUIZ OFFER START!')
+        # пытаемся зарегать пользователя если уже не зареган
+        user = session.query(User).filter(User.telegram_id == query.from_user.id).first()
+        if not user:
+            new_user = User()
+            session.add(new_user)
+            session.commit()
+        else:
+            bot.answer_callback_query(query.id, text='Пользователь уже существует')
+
+
     else:
         bot.answer_callback_query(query.id, text=':(')
 
@@ -251,12 +263,21 @@ def handler_adder(updt):
 
 def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
+    # запускаем бота
     updt = Updater(TELEGRAM_API_KEY)
     updt.start_polling()
+    # прикручиваем обработчики
     handler_adder(updt)
     updt.idle()
 
 
 if __name__ == '__main__':
     logging.info('Bot started')
+    # инициируем работу с бд
+    # создаём схему
+    Base.metadata.create_all(engine)
+    session = Session()
     main()
+
+
+# @run_async - - - для асинхронной работы с несколькими чатами
