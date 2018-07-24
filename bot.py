@@ -218,16 +218,19 @@ def quiz_handler(bot, update):
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id, reply_markup=reply_markup)
     """
+    solar_system = ['Солнце', 'Меркурий', 'Венера', 'Земля',
+                    'Марс', 'Юпитер', 'Сатурн', 'Уран', 'Нептун',
+                    'Плутон', 'Хаумеа', 'Макемаке', 'Эрида']
     url_buttons = [
-        InlineKeyboardButton(text='bla1'),
-        InlineKeyboardButton(text='bla2'),
-        InlineKeyboardButton(text='bla3')]
-    custom_keyboard = [url_buttons[0:1], url_buttons[1:2], url_buttons[2:3]]
+        InlineKeyboardButton(
+            text=item, url="https://ru.wikipedia.org/wiki/{}".format(item))
+        for item in solar_system]
+    custom_keyboard = [url_buttons[:5], url_buttons[5:10], url_buttons[10:]]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id,
                      text="Выберите объект для изучения:",
                      reply_markup=reply_markup)
-
+    
 
 
 
