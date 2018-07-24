@@ -207,9 +207,9 @@ def quiz_handler(bot, update):
     30 сек на каждый ответ.
     """
     buttons = [InlineKeyboardButton(text='Поехали!',
-                                    callback_data="quiz_offer start"),
+                                    callback_data="quiz_offer"),
                InlineKeyboardButton(text='Отмена',
-                                    callback_data="quiz_offer cancel"),
+                                    callback_data="quiz_offer"),
                InlineKeyboardButton(text='Меркурий',
                                     callback_data="quiz_respond Меркурий!")]
     reply_markup = InlineKeyboardMarkup([buttons])
@@ -221,14 +221,8 @@ def quiz_offer_handler(bot, update):
     """
     Функция обработки ответов на предложение сыграть в викторину
     """
+    print('QUIZ OFFER HANDLER!QUIZ OFFER HANDLER!QUIZ OFFER HANDLER!')
     bot.send_message(update.message.chat.id, text='QUIZ OFFER HANDLER!')
-
-
-def unknown_handler(bot, update):
-    """
-    Функция обработки ответов на предложение сыграть в викторину
-    """
-    bot.send_message(update.message.chat.id, text='unknown_handler!')
 
 
 def handler_adder(updt):
@@ -246,12 +240,7 @@ def handler_adder(updt):
     # обработчик ответов от пользователя
     # на предложение сыграть
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_offer_handler,
-                                                     pattern='^quiz_offer.*'))
-    # ответы на вопросы викторины
-    # updt.dispatcher.add_handler(CallbackQueryHandler(quiz_respond_handler,
-    #                                                 pattern='^quiz_respond.*'))
-    # без паттерна
-    updt.dispatcher.add_handler(CallbackQueryHandler(unknown_handler))
+                                                     pattern='^quiz_offer$'))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
