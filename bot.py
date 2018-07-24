@@ -225,12 +225,13 @@ def quiz_handler(bot, update):
         InlineKeyboardButton(
             text=item, url="https://ru.wikipedia.org/wiki/{}".format(item))
         for item in solar_system]
-    custom_keyboard = [url_buttons[:5], url_buttons[5:10], url_buttons[10:]]
+    print(url_buttons)
+    custom_keyboard = [url_buttons]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id,
                      text="Выберите объект для изучения:",
                      reply_markup=reply_markup)
-    
+
 
 
 
