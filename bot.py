@@ -207,9 +207,9 @@ def quiz_handler(bot, update):
     30 сек на каждый ответ.
     """
     buttons = [InlineKeyboardButton(text='Поехали!',
-                                    callback_data="quiz_offer"),
+                                    callback_data="quiz_offer ok"),
                InlineKeyboardButton(text='Отмена',
-                                    callback_data="quiz_offer"),
+                                    callback_data="quiz_offer cancel"),
                InlineKeyboardButton(text='Меркурий',
                                     callback_data="quiz_respond Меркурий!")]
     reply_markup = InlineKeyboardMarkup([buttons])
@@ -240,7 +240,7 @@ def handler_adder(updt):
     # обработчик ответов от пользователя
     # на предложение сыграть
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_offer_handler,
-                                                     pattern='^quiz_offer$'))
+                                                     pattern='^quiz_offer.*'))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
