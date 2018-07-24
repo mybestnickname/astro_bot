@@ -218,14 +218,14 @@ def quiz_handler(bot, update):
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id, reply_markup=reply_markup)
     """
-    url_buttons = [
+    buttons = [
         InlineKeyboardButton(
             text='Солнце', url="https://ru.wikipedia.org/wiki/Солнце"),
         InlineKeyboardButton(
             text='Меркурий', url="https://ru.wikipedia.org/wiki/Меркурий")
     ]
-    print(url_buttons)
-    custom_keyboard = [url_buttons]
+    print(buttons)
+    custom_keyboard = [buttons]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id,
                      text="Выберите объект для изучения:",
