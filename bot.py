@@ -228,7 +228,6 @@ def quiz_handler(bot, update):
     custom_keyboard = [buttons]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id,
-                     text="Выберите объект для изучения:",
                      reply_markup=reply_markup)
 
 
