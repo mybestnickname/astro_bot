@@ -202,10 +202,10 @@ def quiz_handler(bot, update):
     # отсчёт должен производится в отдельном треде
     # чтоб не блокировать приём ответов
     bot_text = """
-        Сыграем в викторину?
-        10 вопросов о космосе.
-        30 сек на каждый ответ.
-                """
+    Сыграем в викторину?
+    10 вопросов о космосе.
+    30 сек на каждый ответ.
+    """
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
     buttons = [InlineKeyboardButton(text='Поехали!',
                                     callback_data="quiz_offer start"),
@@ -213,7 +213,7 @@ def quiz_handler(bot, update):
                                     callback_data="quiz_offer cancel"),
                InlineKeyboardButton(text='Отмена',
                                     callback_data="quiz_respond Меркурий!")]
-    reply_markup = InlineKeyboardMarkup(buttons)
+    reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(update.message.chat.id, reply_markup=reply_markup)
 
 
