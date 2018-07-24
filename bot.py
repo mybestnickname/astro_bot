@@ -207,6 +207,7 @@ def quiz_handler(bot, update):
     30 сек на каждый ответ.
     """
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
+    """
     buttons = [InlineKeyboardButton(text='Поехали!',
                                     callback_data="quiz_offer start"),
                InlineKeyboardButton(text='Отмена',
@@ -216,6 +217,16 @@ def quiz_handler(bot, update):
     custom_keyboard = [buttons[0:2]]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=update.message.chat.id, reply_markup=reply_markup)
+    """
+    url_buttons = [
+        InlineKeyboardButton(text='bla1'),
+        InlineKeyboardButton(text='bla2'),
+        InlineKeyboardButton(text='bla3')]
+    custom_keyboard = [url_buttons[0:1], url_buttons[1:2], url_buttons[2:3]]
+    reply_markup = InlineKeyboardMarkup(custom_keyboard)
+    bot.send_message(chat_id=update.message.chat.id,
+                     text="Выберите объект для изучения:",
+                     reply_markup=reply_markup)
 
 
 
