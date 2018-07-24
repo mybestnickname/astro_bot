@@ -206,28 +206,15 @@ def quiz_handler(bot, update):
     10 вопросов о космосе.
     30 сек на каждый ответ.
     """
-    bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
-    """
     buttons = [InlineKeyboardButton(text='Поехали!',
                                     callback_data="quiz_offer start"),
                InlineKeyboardButton(text='Отмена',
                                     callback_data="quiz_offer cancel"),
-               InlineKeyboardButton(text='Отмена',
+               InlineKeyboardButton(text='Меркурий',
                                     callback_data="quiz_respond Меркурий!")]
     custom_keyboard = [buttons[0:2]]
     reply_markup = InlineKeyboardMarkup(custom_keyboard)
-    bot.send_message(chat_id=update.message.chat.id, reply_markup=reply_markup)
-    """
-    buttons = [
-        InlineKeyboardButton(
-            text='Солнце', url="https://ru.wikipedia.org/wiki/Солнце"),
-        InlineKeyboardButton(
-            text='Меркурий', url="https://ru.wikipedia.org/wiki/Меркурий")
-    ]
-    print(buttons)
-    custom_keyboard = [buttons]
-    reply_markup = InlineKeyboardMarkup(custom_keyboard)
-    bot.send_message(chat_id=update.message.chat.id,
+    bot.send_message(chat_id=update.message.chat.id, text=bot_text,
                      reply_markup=reply_markup)
 
 
