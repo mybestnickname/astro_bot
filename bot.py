@@ -212,8 +212,7 @@ def quiz_handler(bot, update):
                                     callback_data="quiz_offer cancel"),
                InlineKeyboardButton(text='Меркурий',
                                     callback_data="quiz_respond Меркурий!")]
-    custom_keyboard = [buttons[0:2]]
-    reply_markup = InlineKeyboardMarkup(custom_keyboard)
+    reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=bot_text,
                      reply_markup=reply_markup)
 
@@ -222,7 +221,14 @@ def quiz_offer_handler(bot, update):
     """
     Функция обработки ответов на предложение сыграть в викторину
     """
-    bot.send_message(update.message.chat.id, text='blblblblbl QUIZ!')
+    bot.send_message(update.message.chat.id, text='QUIZ OFFER HANDLER!')
+
+
+def unknown_handler(bot, update):
+    """
+    Функция обработки ответов на предложение сыграть в викторину
+    """
+    bot.send_message(update.message.chat.id, text='unknown_handler!')
 
 
 def handler_adder(updt):
@@ -244,6 +250,8 @@ def handler_adder(updt):
     # ответы на вопросы викторины
     # updt.dispatcher.add_handler(CallbackQueryHandler(quiz_respond_handler,
     #                                                 pattern='^quiz_respond.*'))
+    # без паттерна
+    updt.dispatcher.add_handler(CallbackQueryHandler(unknown_handler))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
