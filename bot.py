@@ -238,9 +238,9 @@ def quiz_answer_handler(bot, update):
     # в чатик где это спросилось
     # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
     bot.answer_callback_query(query.id, text='ответ вижу')
-    bot.edit_message_text(text="Selected option: {}".format(query.data),
-                          chat_id=query.message.chat_id,
-                          message_id=query.message.message_id)
+    # bot.edit_message_text(text="Selected option: {}".format(query.data),
+    #                       chat_id=query.message.chat_id,
+    #                       message_id=query.message.message_id)
 
 
 def show_all_users(bot, update):
