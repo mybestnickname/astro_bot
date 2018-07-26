@@ -215,9 +215,10 @@ def quiz_handler(bot, update):
                      reply_markup=reply_markup)
 
 
+"""
 def quiz_offer_handler(bot, update):
     """
-    Функция обработки ответов на предложение сыграть в викторину
+# Функция обработки ответов на предложение сыграть в викторину
     """
     query = update.callback_query
     if query.data == "quiz_offer ok":
@@ -230,21 +231,14 @@ def quiz_offer_handler(bot, update):
                             last_quiz_res='0/0')
             session.add(new_user)
             session.commit()
-        else:
-            bot.answer_callback_query(query.id,
-                                      text='Пользователь уже существует.')
-        # высылаем вопрос
-        send_random_question(bot, update)
-    else:
-        bot.answer_callback_query(query.id, text=':(')
+"""
 
 
-def send_random_question(bot, update):
+def quiz_handler(bot, update):
     """
     Функция отправляющая рандомный вопрос из бд в чатик,
     пользователю который задал /quiz
     """
-    query = update.callback_query
     question_text = 'Мегавопрос:'
     buttons = [InlineKeyboardButton(text='1',
                                     callback_data="quiz_answer f"),
@@ -273,6 +267,7 @@ def quiz_answer_handler(bot, update):
     # вынимаем пользователя
     # пишем какой пользователь и какой вопрос задавался
     # в чатик где это спросилось
+    # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
     bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
