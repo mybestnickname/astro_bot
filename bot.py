@@ -204,18 +204,39 @@ def constellations_translator(const_name):
 
 
 def quiz_handler(bot, update):
-    keyboard = [[InlineKeyboardButton("Option 1", callback_data='1'),
-                 InlineKeyboardButton("Option 2", callback_data='2')],
-
-                [InlineKeyboardButton("Option 3", callback_data='3')]]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    """
+    Функция отправляющая рандомный вопрос из бд в чатик,
+    пользователю который задал /quiz
+    """
+    question_text = 'Мегавопрос:'
+    buttons = [[InlineKeyboardButton(text='1',
+                                     callback_data="quiz_answer"),
+                InlineKeyboardButton(text='2',
+                                     callback_data="quiz_answer"),
+                InlineKeyboardButton(text='3',
+                                     callback_data="quiz_answer"),
+                InlineKeyboardButton(text='4',
+                                     callback_data="quiz_answer")]]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    # bot.send_message(chat_id=update.message.chat.id, text=question_text,
+    #                 reply_markup=reply_markup)
     update.message.reply_text('Please choose:', reply_markup=reply_markup)
 
 
-def button(bot, update):
+def quiz_answer_handler(bot, update):
+    """
+    Обработчик ответа на вопрос.
+    Определяет, правильный ли ответ, изменяет бд
+    Пишет в чатик инфу об ответе пользователя на вопрос
+    """
     query = update.callback_query
-
+    # query.data - ответ на вопрос правильный или нет?
+    # вынимаем чат айди
+    # вынимаем пользователя
+    # пишем какой пользователь и какой вопрос задавался
+    # в чатик где это спросилось
+    # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
+    # bot.answer_callback_query(query.id, text='Ответ вижу')
     bot.edit_message_text(text="Selected option: {}".format(query.data),
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
@@ -245,12 +266,12 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
     # обработчик ответа на вопрос
-    updt.dispatcher.add_handler(CallbackQueryHandler(button))
+    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler))
     # обработчик неизвестных сообщений
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик неизвестных комманд в самый конец
-    updt.dispatcher.add_handler(MessageHandler(
-        Filters.command, strange_command_handler))
+    updt.dispatcher.add_handler(MessageHandler(Filters.command,
+                                               strange_command_handler))
 
 
 def main():
