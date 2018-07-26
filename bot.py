@@ -227,20 +227,17 @@ def quiz_answer_handler(bot, update):
     Обработчик ответа на вопрос.
     Определяет, правильный ли ответ, изменяет бд
     Пишет в чатик инфу об ответе пользователя на вопрос
-    Создаёт если надо пользователя и считает его статистику
     """
     query = update.callback_query
     username = update.message.from_user.username
+    bot_text = 'Пользователь {} ответил {}'.format(username, query.data)
     # query.data - ответ на вопрос правильный или нет?
     # вынимаем чат айди
     # вынимаем пользователя
     # пишем какой пользователь и какой вопрос задавался
     # в чатик где это спросилось
     # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
-    bot.answer_callback_query(query.id, text='ответ вижу')
-    # bot.edit_message_text(text="Selected option: {}".format(query.data),
-    #                       chat_id=query.message.chat_id,
-    #                       message_id=query.message.message_id)
+    bot.answer_callback_query(query.id, text='Ответ вижу')
 
 
 def show_all_users(bot, update):
@@ -267,8 +264,7 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
     # обработчик ответа на вопрос
-    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
-                                                     pattern='^quiz_answer$'))
+    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler))
     # обработчик неизвестных сообщений
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик неизвестных комманд в самый конец
