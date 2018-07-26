@@ -217,13 +217,13 @@ def quiz_handler(bot, update):
     """
     question_text = 'Мегавопрос:'
     buttons = [InlineKeyboardButton(text='1',
-                                    callback_data="answer_f"),
+                                    callback_data="quiz_offer ok"),
                InlineKeyboardButton(text='2',
-                                    callback_data="answer_f"),
+                                    callback_data="quiz_offer ok"),
                InlineKeyboardButton(text='3',
-                                    callback_data="answer_f"),
+                                    callback_data="quiz_offer ok"),
                InlineKeyboardButton(text='4',
-                                    callback_data="answer_t")]
+                                    callback_data="quiz_offer ok")]
     reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=question_text,
                      reply_markup=reply_markup)
@@ -272,7 +272,8 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик ответа на вопрос
-    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler))
+    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
+                                                     pattern='^quiz_offer.*'))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
