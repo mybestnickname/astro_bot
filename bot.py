@@ -194,20 +194,13 @@ def constellations_translator(const_name):
     """
     return constells_dict.get(const_name, const_name)
 
-"""
-def quiz_offer_handler(bot, update):
-    query = update.callback_query
-    if query.data == "quiz_offer ok":
-        bot.answer_callback_query(query.id, text='QUIZ OFFER START!')
-        # пытаемся зарегать пользователя если уже не зареган
-        user = session.query(User).filter(
-            User.telegram_id == query.from_user.id).first()
-        if not user:
-            new_user = User(telegram_id=query.from_user.id,
-                            last_quiz_res='0/0')
-            session.add(new_user)
-            session.commit()
-"""
+#        user = session.query(User).filter(
+#            User.telegram_id == query.from_user.id).first()
+
+#           new_user = User(telegram_id=query.from_user.id,
+#                            last_quiz_res='0/0')
+#            session.add(new_user)
+#            session.commit()
 
 
 def quiz_handler(bot, update):
@@ -227,14 +220,15 @@ def quiz_handler(bot, update):
     reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=question_text,
                      reply_markup=reply_markup)
-                     
+
 
 def quiz_answer_handler(bot, update):
     """
     Обработчик ответа на вопрос.
-    Определяет, правильный ли ответ, изменяет бд 
+    Определяет, правильный ли ответ, изменяет бд
     Пишет в чатик инфу об ответе пользователя на вопрос
     """
+    bot.send_message(chat_id=update.message.chat.id, text='ответ поступил')
     query = update.callback_query
     username = update.message.from_user.username
     bot_text = 'Пользователь {} ответил {}'.format(username, query.data)
@@ -283,9 +277,9 @@ def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
     # запускаем бота
     updt = Updater(TELEGRAM_API_KEY)
+    handler_adder(updt)
     updt.start_polling()
     # прикручиваем обработчики
-    handler_adder(updt)
     updt.idle()
 
 
