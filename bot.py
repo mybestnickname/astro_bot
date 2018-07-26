@@ -209,15 +209,15 @@ def quiz_handler(bot, update):
     пользователю который задал /quiz
     """
     question_text = 'Мегавопрос:'
-    buttons = [[InlineKeyboardButton(text='1',
-                                     callback_data="quiz_answer"),
-                InlineKeyboardButton(text='2',
-                                     callback_data="quiz_answer"),
-                InlineKeyboardButton(text='3',
-                                     callback_data="quiz_answer"),
-                InlineKeyboardButton(text='4',
-                                     callback_data="quiz_answer")]]
-    reply_markup = InlineKeyboardMarkup(buttons)
+    buttons = [InlineKeyboardButton(text='1',
+                                    callback_data="quiz_answer"),
+               InlineKeyboardButton(text='2',
+                                    callback_data="quiz_answer"),
+               InlineKeyboardButton(text='3',
+                                    callback_data="quiz_answer"),
+               InlineKeyboardButton(text='4',
+                                    callback_data="quiz_answer")]
+    reply_markup = InlineKeyboardMarkup([buttons])
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
     update.message.reply_text('Please choose:', reply_markup=reply_markup)
