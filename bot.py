@@ -215,9 +215,6 @@ def quiz_handler(bot, update):
     Функция отправляющая рандомный вопрос из бд в чатик,
     пользователю который задал /quiz
     """
-    question_text = 'start quiz'
-    bot.send_message(chat_id=update.message.chat.id, text=question_text)
-    """
     question_text = 'Мегавопрос:'
     buttons = [InlineKeyboardButton(text='1',
                                     callback_data="quiz_answer f"),
@@ -230,8 +227,7 @@ def quiz_handler(bot, update):
     reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=question_text,
                      reply_markup=reply_markup)
-                     """
-
+                     
 
 def quiz_answer_handler(bot, update):
     """
