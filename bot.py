@@ -194,27 +194,6 @@ def constellations_translator(const_name):
     """
     return constells_dict.get(const_name, const_name)
 
-
-def quiz_handler(bot, update):
-    """
-    Обработчик команды quiz
-    """
-    # подгружаем 10 случайных вопросов из бд
-    # даём 30 сек на каждый ответ
-    # отсчёт должен производится в отдельном треде
-    # чтоб не блокировать приём ответов
-    bot_text = """
-    Вопрос из астрономии:
-    """
-    buttons = [InlineKeyboardButton(text='Поехали!',
-                                    callback_data="quiz_offer ok"),
-               InlineKeyboardButton(text='Отмена',
-                                    callback_data="quiz_offer cancel")]
-    reply_markup = InlineKeyboardMarkup([buttons])
-    bot.send_message(chat_id=update.message.chat.id, text=bot_text,
-                     reply_markup=reply_markup)
-
-
 """
 def quiz_offer_handler(bot, update):
     """
@@ -239,6 +218,9 @@ def quiz_handler(bot, update):
     Функция отправляющая рандомный вопрос из бд в чатик,
     пользователю который задал /quiz
     """
+    question_text = 'start quiz'
+    bot.send_message(chat_id=update.message.chat.id, text=question_text)
+    """
     question_text = 'Мегавопрос:'
     buttons = [InlineKeyboardButton(text='1',
                                     callback_data="quiz_answer f"),
@@ -251,6 +233,7 @@ def quiz_handler(bot, update):
     reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=question_text,
                      reply_markup=reply_markup)
+                     """
 
 
 def quiz_answer_handler(bot, update):
@@ -295,10 +278,7 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
-    # обработчик ответов от пользователя
-    # на предложение сыграть
-    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_offer_handler,
-                                                     pattern='^quiz_offer.*'))
+    # обработчик ответа на вопрос
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
                                                      pattern='^quiz_answer.*'))
     # обработчик неизвестных комманд в самый конец
