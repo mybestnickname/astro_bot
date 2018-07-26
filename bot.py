@@ -254,8 +254,8 @@ def send_random_question(bot, update):
                InlineKeyboardButton(text='4',
                                     callback_data="quiz_answer t")]
     reply_markup = InlineKeyboardMarkup([buttons])
-    bot.answer_callback_query(query.id, text=question_text,
-                              reply_markup=reply_markup)
+    bot.send_message(chat_id=update.message.chat.id, text=question_text,
+                     reply_markup=reply_markup)
 
 
 def quiz_answer_handler(bot, update):
