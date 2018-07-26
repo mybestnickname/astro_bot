@@ -230,10 +230,11 @@ def quiz_offer_handler(bot, update):
                             last_quiz_res='0/0')
             session.add(new_user)
             session.commit()
-            send_random_question(bot, update)
         else:
             bot.answer_callback_query(query.id,
                                       text='Пользователь уже существует.')
+        # высылаем вопрос
+        send_random_question(bot, update)
     else:
         bot.answer_callback_query(query.id, text=':(')
 
