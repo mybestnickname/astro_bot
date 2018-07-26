@@ -272,8 +272,7 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик ответа на вопрос
-    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
-                                                     pattern='^answer_.*'))
+    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
