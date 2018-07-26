@@ -199,21 +199,17 @@ def quiz_handler(bot, update):
     """
     Обработчик команды quiz
     """
-    # подгружаем 10 случайных вопросов из бд
-    # даём 30 сек на каждый ответ
-    # отсчёт должен производится в отдельном треде
-    # чтоб не блокировать приём ответов
     bot_text = """
-    Сыграем в викторину?
-    10 вопросов о космосе.
-    30 сек на каждый ответ.
+    Случайный вопрос из астрономии?
     """
-    buttons = [InlineKeyboardButton(text='Поехали!',
+    buttons = [InlineKeyboardButton(text='1',
                                     callback_data="quiz_offer ok"),
-               InlineKeyboardButton(text='Отмена',
-                                    callback_data="quiz_offer cancel"),
-               InlineKeyboardButton(text='Меркурий',
-                                    callback_data="quiz_respond Меркурий!")]
+               InlineKeyboardButton(text='2',
+                                    callback_data="quiz_offer ok"),
+               InlineKeyboardButton(text='3',
+                                    callback_data="quiz_offer ok"),
+               InlineKeyboardButton(text='4',
+                                    callback_data="quiz_offer ok")]
     reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=bot_text,
                      reply_markup=reply_markup)
@@ -223,22 +219,9 @@ def quiz_offer_handler(bot, update):
     """
     Функция обработки ответов на предложение сыграть в викторину
     """
-    query = update.callback_query
-    if query.data == "quiz_offer ok":
-        bot.answer_callback_query(query.id, text='QUIZ OFFER START!')
-        # пытаемся зарегать пользователя если уже не зареган
-        user = session.query(User).filter(
-            User.telegram_id == query.from_user.id).first()
-        if not user:
-            new_user = User(telegram_id=query.from_user.id,
-                            last_quiz_res='0/0')
-            session.add(new_user)
-            session.commit()
-        else:
-            bot.answer_callback_query(query.id,
-                                      text='Пользователь уже существует.')
-    else:
-        bot.answer_callback_query(query.id, text=':(')
+    # query = update.callback_query
+    bot_text = 'bbbbbbbbb'
+    bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
 def show_all_users(bot, update):
