@@ -2,7 +2,7 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from model import User, Question
-from base import Session, engine, Base
+from base_def import Session, engine, Base
 import logging
 from settings import constells_dict
 from settingsbot import PROXY, TELEGRAM_API_KEY
@@ -227,17 +227,29 @@ def quiz_offer_handler(bot, update):
     if query.data == "quiz_offer ok":
         bot.answer_callback_query(query.id, text='QUIZ OFFER START!')
         # пытаемся зарегать пользователя если уже не зареган
-        user = session.query(User).filter(User.telegram_id == query.from_user.id).first()
+        user = session.query(User).filter(
+            User.telegram_id == query.from_user.id).first()
         if not user:
-            new_user = User()
+            new_user = User(telegram_id=query.from_user.id,
+                            last_quiz_res='0/0')
             session.add(new_user)
             session.commit()
         else:
-            bot.answer_callback_query(query.id, text='Пользователь уже существует')
-
-
+            bot.answer_callback_query(query.id,
+                                      text='Пользователь уже существует.')
     else:
         bot.answer_callback_query(query.id, text=':(')
+
+
+def show_all_users(bot, update):
+    """
+    Печатаем список всех юзеров из бд
+    """
+    users = session.query(User).all()
+    for user in users:
+        bot_text = 'Пользователь. id: {} quiz_res: {}'.format(
+            user.telegram_id, user.last_quiz_res)
+        bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
 def handler_adder(updt):
@@ -251,6 +263,7 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("solar", solar_system_handler))
     updt.dispatcher.add_handler(CommandHandler("help", help_handler))
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
+    updt.dispatcher.add_handler(CommandHandler("users", show_all_users))
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик ответов от пользователя
     # на предложение сыграть
@@ -272,12 +285,10 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.info('Bot started')
+    # logging.info('Bot started')
     # инициируем работу с бд
     # создаём схему
     Base.metadata.create_all(engine)
     session = Session()
-    main()
-
 
 # @run_async - - - для асинхронной работы с несколькими чатами

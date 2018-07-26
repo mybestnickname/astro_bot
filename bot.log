@@ -18,3 +18,4 @@
 2018-07-23 15:16:48,661 - INFO - Received signal 2 (SIGINT), stopping...
 2018-07-23 15:16:51,372 - ERROR - Error while bootstrap del webhook: urllib3 HTTPError SOCKSHTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot561255866:AAG9eDPHU5FLHlafsjR_ApUzu4SEXX0mmIU/deleteWebhook (Caused by ConnectTimeoutError(<telegram.vendor.ptb_urllib3.urllib3.contrib.socks.SOCKSHTTPSConnection object at 0x00000000040DC9B0>, 'Connection to api.telegram.org timed out. (connect timeout=5.0)'))
 2018-07-23 15:16:51,372 - WARNING - Failed bootstrap phase; try=1 max_retries=-1
+2018-07-24 17:06:45,944 - INFO - Bot started

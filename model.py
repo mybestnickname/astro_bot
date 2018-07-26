@@ -1,18 +1,17 @@
 from sqlalchemy import Column, String, Integer, Date
-from base import Base
+from base_def import Base
 
 
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     telegram_id = Column(String, index=True, unique=True)
-    last_quiz_res = Column(Integer, default=0)
+    last_quiz_res = Column(Integer, default='0/0')
     last_quiz_date = Column(Date)
 
-    def __init__(self, telegram_id, last_quiz_res, last_quiz_date):
+    def __init__(self, telegram_id, last_quiz_res):
         self.telegram_id = telegram_id
         self.last_quiz_res = last_quiz_res
-        self.last_quiz_date = last_quiz_date
 
 
 class Question(Base):
