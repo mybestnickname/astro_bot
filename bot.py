@@ -196,9 +196,6 @@ def constellations_translator(const_name):
 
 """
 def quiz_offer_handler(bot, update):
-    """
-# Функция обработки ответов на предложение сыграть в викторину
-    """
     query = update.callback_query
     if query.data == "quiz_offer ok":
         bot.answer_callback_query(query.id, text='QUIZ OFFER START!')
