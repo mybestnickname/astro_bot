@@ -204,16 +204,12 @@ def quiz_handler(bot, update):
     # отсчёт должен производится в отдельном треде
     # чтоб не блокировать приём ответов
     bot_text = """
-    Сыграем в викторину?
-    10 вопросов о космосе.
-    30 сек на каждый ответ.
+    Вопрос из астрономии:
     """
     buttons = [InlineKeyboardButton(text='Поехали!',
                                     callback_data="quiz_offer ok"),
                InlineKeyboardButton(text='Отмена',
-                                    callback_data="quiz_offer cancel"),
-               InlineKeyboardButton(text='Меркурий',
-                                    callback_data="quiz_respond Меркурий!")]
+                                    callback_data="quiz_offer cancel")]
     reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=bot_text,
                      reply_markup=reply_markup)
@@ -234,6 +230,7 @@ def quiz_offer_handler(bot, update):
                             last_quiz_res='0/0')
             session.add(new_user)
             session.commit()
+            send_random_question(bot, update)
         else:
             bot.answer_callback_query(query.id,
                                       text='Пользователь уже существует.')
@@ -241,10 +238,41 @@ def quiz_offer_handler(bot, update):
         bot.answer_callback_query(query.id, text=':(')
 
 
-def quiz_answer_handler(bot, update):
+def send_random_question(bot, update):
     """
+    Функция отправляющая рандомный вопрос из бд в чатик,
+    пользователю который задал /quiz
     """
     query = update.callback_query
+    question_text = 'Мегавопрос:'
+    buttons = [InlineKeyboardButton(text='1',
+                                    callback_data="quiz_answer f"),
+               InlineKeyboardButton(text='2',
+                                    callback_data="quiz_answer f"),
+               InlineKeyboardButton(text='3',
+                                    callback_data="quiz_answer f"),
+               InlineKeyboardButton(text='4',
+                                    callback_data="quiz_answer t")]
+    reply_markup = InlineKeyboardMarkup([buttons])
+    bot.answer_callback_query(query.id, text=question_text,
+                              reply_markup=reply_markup)
+
+
+def quiz_answer_handler(bot, update):
+    """
+    Обработчик ответа на вопрос.
+    Определяет, правильный ли ответ, изменяет бд 
+    Пишет в чатик инфу об ответе пользователя на вопрос
+    """
+    query = update.callback_query
+    username = update.message.from_user.username
+    bot_text = 'Пользователь {} ответил {}'.format(username, query.data)
+    # query.data - ответ на вопрос правильный или нет?
+    # вынимаем чат айди
+    # вынимаем пользователя
+    # пишем какой пользователь и какой вопрос задавался
+    # в чатик где это спросилось
+    bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
 def show_all_users(bot, update):
@@ -276,7 +304,7 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_offer_handler,
                                                      pattern='^quiz_offer.*'))
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
-                                                     pattern='^quiz_offer.*'))
+                                                     pattern='^quiz_answer.*'))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
