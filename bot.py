@@ -241,9 +241,15 @@ def quiz_offer_handler(bot, update):
         bot.answer_callback_query(query.id, text=':(')
 
 
+def quiz_answer_handler(bot, update):
+    """
+    """
+    query = update.callback_query
+
+
 def show_all_users(bot, update):
     """
-    Печатаем список всех юзеров из бд
+    Печатаем список всех юзеров в бд
     """
     users = session.query(User).all()
     for user in users:
@@ -263,11 +269,13 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("solar", solar_system_handler))
     updt.dispatcher.add_handler(CommandHandler("help", help_handler))
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
-    updt.dispatcher.add_handler(CommandHandler("users", show_all_users))
+    updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик ответов от пользователя
     # на предложение сыграть
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_offer_handler,
+                                                     pattern='^quiz_offer.*'))
+    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
                                                      pattern='^quiz_offer.*'))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
@@ -285,10 +293,11 @@ def main():
 
 
 if __name__ == '__main__':
-    # logging.info('Bot started')
+    logging.info('Bot started')
     # инициируем работу с бд
     # создаём схему
     Base.metadata.create_all(engine)
     session = Session()
+    main()
 
 # @run_async - - - для асинхронной работы с несколькими чатами
