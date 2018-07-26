@@ -194,57 +194,56 @@ def constellations_translator(const_name):
     """
     return constells_dict.get(const_name, const_name)
 
-#        user = session.query(User).filter(
-#            User.telegram_id == query.from_user.id).first()
-
-#           new_user = User(telegram_id=query.from_user.id,
-#                            last_quiz_res='0/0')
-#            session.add(new_user)
-#            session.commit()
-
 
 def quiz_handler(bot, update):
     """
-    Функция отправляющая рандомный вопрос из бд в чатик,
-    пользователю который задал /quiz
+    Обработчик команды quiz
     """
-    question_text = 'Мегавопрос:'
-    buttons = [InlineKeyboardButton(text='1',
-                                    callback_data="quiz_answer"),
-               InlineKeyboardButton(text='2',
-                                    callback_data="quiz_answer"),
-               InlineKeyboardButton(text='3',
-                                    callback_data="quiz_answer"),
-               InlineKeyboardButton(text='4',
-                                    callback_data="quiz_answer")]
+    # подгружаем 10 случайных вопросов из бд
+    # даём 30 сек на каждый ответ
+    # отсчёт должен производится в отдельном треде
+    # чтоб не блокировать приём ответов
+    bot_text = """
+    Сыграем в викторину?
+    10 вопросов о космосе.
+    30 сек на каждый ответ.
+    """
+    buttons = [InlineKeyboardButton(text='Поехали!',
+                                    callback_data="quiz_offer ok"),
+               InlineKeyboardButton(text='Отмена',
+                                    callback_data="quiz_offer cancel"),
+               InlineKeyboardButton(text='Меркурий',
+                                    callback_data="quiz_respond Меркурий!")]
     reply_markup = InlineKeyboardMarkup([buttons])
-    bot.send_message(chat_id=update.message.chat.id, text=question_text,
+    bot.send_message(chat_id=update.message.chat.id, text=bot_text,
                      reply_markup=reply_markup)
 
 
-def quiz_answer_handler(bot, update):
+def quiz_offer_handler(bot, update):
     """
-    Обработчик ответа на вопрос.
-    Определяет, правильный ли ответ, изменяет бд
-    Пишет в чатик инфу об ответе пользователя на вопрос
+    Функция обработки ответов на предложение сыграть в викторину
     """
     query = update.callback_query
-    username = update.message.from_user.username
-    bot_text = 'Пользователь {} ответил {}'.format(username, query.data)
-    # query.data - ответ на вопрос правильный или нет?
-    # вынимаем чат айди
-    # вынимаем пользователя
-    # пишем какой пользователь и какой вопрос задавался
-    # в чатик где это спросилось
-    # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
-    bot.answer_callback_query(query.id, text='Ответ вижу')
-    bot.send_message(chat_id=update.message.chat.id, text='bl')
-    bot.send_message(chat_id=update.message.chat.id, text=bot_text)
+    if query.data == "quiz_offer ok":
+        bot.answer_callback_query(query.id, text='QUIZ OFFER START!')
+        # пытаемся зарегать пользователя если уже не зареган
+        user = session.query(User).filter(
+            User.telegram_id == query.from_user.id).first()
+        if not user:
+            new_user = User(telegram_id=query.from_user.id,
+                            last_quiz_res='0/0')
+            session.add(new_user)
+            session.commit()
+        else:
+            bot.answer_callback_query(query.id,
+                                      text='Пользователь уже существует.')
+    else:
+        bot.answer_callback_query(query.id, text=':(')
 
 
 def show_all_users(bot, update):
     """
-    Печатаем список всех юзеров в бд
+    Печатаем список всех юзеров из бд
     """
     users = session.query(User).all()
     for user in users:
@@ -264,12 +263,12 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("solar", solar_system_handler))
     updt.dispatcher.add_handler(CommandHandler("help", help_handler))
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
-    updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
-    # обработчик ответа на вопрос
-    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
-                                                     pattern='^quiz_answer$'))
-    # обработчик неизвестных сообщений
+    updt.dispatcher.add_handler(CommandHandler("users", show_all_users))
     updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
+    # обработчик ответов от пользователя
+    # на предложение сыграть
+    updt.dispatcher.add_handler(CallbackQueryHandler(quiz_offer_handler,
+                                                     pattern='^quiz_offer.*'))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
@@ -279,9 +278,9 @@ def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
     # запускаем бота
     updt = Updater(TELEGRAM_API_KEY)
-    handler_adder(updt)
     updt.start_polling()
     # прикручиваем обработчики
+    handler_adder(updt)
     updt.idle()
 
 
