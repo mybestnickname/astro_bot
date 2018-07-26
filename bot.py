@@ -227,6 +227,7 @@ def quiz_answer_handler(bot, update):
     Обработчик ответа на вопрос.
     Определяет, правильный ли ответ, изменяет бд
     Пишет в чатик инфу об ответе пользователя на вопрос
+    Создаёт если надо пользователя и считает его статистику
     """
     query = update.callback_query
     username = update.message.from_user.username
@@ -236,6 +237,7 @@ def quiz_answer_handler(bot, update):
     # пишем какой пользователь и какой вопрос задавался
     # в чатик где это спросилось
     # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
+    answer(text = 'ответ вижу')
     bot.edit_message_text(text="Selected option: {}".format(query.data),
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
