@@ -230,13 +230,15 @@ def quiz_answer_handler(bot, update):
     Пишет в чатик инфу об ответе пользователя на вопрос
     """
     query = update.callback_query
+    bot_text = 'blahblahblah'
     # query.data - ответ на вопрос правильный или нет?
     # вынимаем чат айди
     # вынимаем пользователя
     # пишем какой пользователь и какой вопрос задавался
     # в чатик где это спросилось
     # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
-    # bot.answer_callback_query(query.id, text='Ответ вижу')
+    bot.answer_callback_query(query.id, text='Ответ вижу')
+
     bot.edit_message_text(text="Selected option: {}".format(query.data),
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
