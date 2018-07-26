@@ -210,13 +210,13 @@ def quiz_handler(bot, update):
     """
     question_text = 'Мегавопрос:'
     buttons = [InlineKeyboardButton(text='1',
-                                    callback_data="quiz_offer ok"),
+                                    callback_data="quiz_answer"),
                InlineKeyboardButton(text='2',
-                                    callback_data="quiz_offer ok"),
+                                    callback_data="quiz_answer"),
                InlineKeyboardButton(text='3',
-                                    callback_data="quiz_offer ok"),
+                                    callback_data="quiz_answer"),
                InlineKeyboardButton(text='4',
-                                    callback_data="quiz_offer ok")]
+                                    callback_data="quiz_answer")]
     reply_markup = InlineKeyboardMarkup([buttons])
     bot.send_message(chat_id=update.message.chat.id, text=question_text,
                      reply_markup=reply_markup)
@@ -228,7 +228,6 @@ def quiz_answer_handler(bot, update):
     Определяет, правильный ли ответ, изменяет бд
     Пишет в чатик инфу об ответе пользователя на вопрос
     """
-    bot.send_message(chat_id=update.message.chat.id, text='ответ поступил')
     query = update.callback_query
     username = update.message.from_user.username
     bot_text = 'Пользователь {} ответил {}'.format(username, query.data)
@@ -238,6 +237,8 @@ def quiz_answer_handler(bot, update):
     # пишем какой пользователь и какой вопрос задавался
     # в чатик где это спросилось
     # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
+    bot.answer_callback_query(query.id, text='Ответ вижу')
+    bot.send_message(chat_id=update.message.chat.id, text='bl')
     bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
@@ -264,10 +265,11 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("help", help_handler))
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
-    updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик ответа на вопрос
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
-                                                     pattern='^quiz_offer.*'))
+                                                     pattern='^quiz_answer$'))
+    # обработчик неизвестных сообщений
+    updt.dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
     # обработчик неизвестных комманд в самый конец
     updt.dispatcher.add_handler(MessageHandler(
         Filters.command, strange_command_handler))
