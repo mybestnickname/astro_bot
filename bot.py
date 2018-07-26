@@ -199,8 +199,14 @@ def quiz_handler(bot, update):
     """
     Обработчик команды quiz
     """
+    # подгружаем 10 случайных вопросов из бд
+    # даём 30 сек на каждый ответ
+    # отсчёт должен производится в отдельном треде
+    # чтоб не блокировать приём ответов
     bot_text = """
-    Случайный вопрос из астрономии?
+    Сыграем в викторину?
+    10 вопросов о космосе.
+    30 сек на каждый ответ.
     """
     buttons = [InlineKeyboardButton(text='1',
                                     callback_data="quiz_offer ok"),
@@ -219,9 +225,9 @@ def quiz_offer_handler(bot, update):
     """
     Функция обработки ответов на предложение сыграть в викторину
     """
-    # query = update.callback_query
-    bot_text = 'bbbbbbbbb'
-    bot.send_message(chat_id=update.message.chat.id, text=bot_text)
+    query = update.callback_query
+    if query.data == "quiz_offer ok":
+        bot.answer_callback_query(query.id, text='QUIZ ANSWER START!')
 
 
 def show_all_users(bot, update):
