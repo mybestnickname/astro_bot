@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Date
 from base_def import Base
+import datetime
 
 
 class User(Base):
@@ -7,7 +8,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     telegram_id = Column(String, index=True, unique=True)
     last_quiz_res = Column(Integer, default='0/0')
-    last_quiz_date = Column(Date)
+    last_quiz_date = Column(Date, default=datetime.datetime.now().date())
 
     def __init__(self, telegram_id, last_quiz_res):
         self.telegram_id = telegram_id
@@ -21,6 +22,7 @@ class Question(Base):
     answ_1 = Column(String)
     answ_2 = Column(String)
     answ_3 = Column(String)
+    # 4 варик ответа - всегда верный
     answ_4 = Column(String)
     quest_counter = Column(Integer, default=0)
     true_answ_counter = Column(Integer, default=0)

@@ -194,14 +194,6 @@ def constellations_translator(const_name):
     """
     return constells_dict.get(const_name, const_name)
 
-#        user = session.query(User).filter(
-#            User.telegram_id == query.from_user.id).first()
-
-#           new_user = User(telegram_id=query.from_user.id,
-#                            last_quiz_res='0/0')
-#            session.add(new_user)
-#            session.commit()
-
 
 def quiz_handler(bot, update):
     """
@@ -230,7 +222,16 @@ def quiz_answer_handler(bot, update):
     Пишет в чатик инфу об ответе пользователя на вопрос
     """
     query = update.callback_query
-    bot_text = 'blahblahblah'
+    # зарегаем в бд, если уже не зареган
+    user = session.query(User).filter(
+        User.telegram_id == query.from_user.id).first()
+    if not user:
+        new_user = User(telegram_id=query.from_user.id)
+        session.add(new_user)
+        session.commit()
+    else:
+        user.last_quiz_date = datetime.datetime.now().date()
+
     # query.data - ответ на вопрос правильный или нет?
     # вынимаем чат айди
     # вынимаем пользователя
@@ -255,6 +256,26 @@ def show_all_users(bot, update):
         bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
+def show_user_quiz_res(bot, update):
+    """
+    Функция выводит в чат результаты прохождения квеста для пользователя
+    дату последнего прохождения и кол-во вопросов/кол-во правильных ответов
+    """
+    user = session.query(User).filter(
+        User.telegram_id == update.message.from_user.id).first()
+    if user:
+        update.message.reply_text('Вы не любите астрономию.')
+        answers, correct = user.last_quiz_res.split('/')
+        bot_text = """Пользователь {} последний раз отвечал на вопрос {}.
+        Всего ответов: {}
+        Правильных: {}
+            """.format(update.message.from_user.username,
+                       user.last_quiz_res, answers, correct)
+        update.message.reply_text(bot_text)
+    else:
+        update.message.reply_text('Вы не любите астрономию.')
+
+
 def handler_adder(updt):
     """
     Функция определяющая функции - обработчики комманд
@@ -267,6 +288,8 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("help", help_handler))
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
+    updt.dispatcher.add_handler(CommandHandler(
+        "my_quiz_res", show_user_quiz_res))
     # обработчик ответа на вопрос
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
                                                      pattern='^quiz_answer.*'))
