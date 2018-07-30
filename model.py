@@ -10,7 +10,7 @@ class User(Base):
     quiz_res = Column(Integer, default='0/0')
     last_quiz_date = Column(Date, default=datetime.datetime.now().date())
 
-    def __init__(self, telegram_id, last_quiz_res):
+    def __init__(self, telegram_id, last_quiz_res, quiz_res):
         self.telegram_id = telegram_id
         self.quiz_res = quiz_res
 
