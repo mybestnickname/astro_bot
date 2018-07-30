@@ -278,20 +278,20 @@ def show_user_quiz_res(bot, update):
     Функция выводит в чат результаты прохождения квеста для пользователя
     дату последнего прохождения и кол-во вопросов/кол-во правильных ответов
     """
-    user = session.query(User).filter(
-        User.telegram_id == update.message.from_user.id).first()
-    if user:
-        answers, correct = user.quiz_res.split('/')
-        bot_text = """Пользователь {} последний раз отвечал на вопрос {}.
-        Всего ответов: {}
-        Правильных: {}
-            """.format(update.message.from_user.username,
-                       user.last_quiz_date.strftime("%d.%m.%Y"),
-                       answers,
-                       correct)
-        update.message.reply_text(bot_text)
-    else:
-        update.message.reply_text('Вы не любите астрономию.')
+    #user = session.query(User).filter(
+    #    User.telegram_id == update.message.from_user.id).first()
+    #if user:
+    #    answers, correct = user.quiz_res.split('/')
+    #    bot_text = """Пользователь {} последний раз отвечал на вопрос {}.
+    #    Всего ответов: {}
+    #    Правильных: {}
+    #        """.format(update.message.from_user.username,
+    #                   user.last_quiz_date.strftime("%d.%m.%Y"),
+    #                   answers,
+    #                  correct)
+    #     update.message.reply_text(bot_text)
+    # else:
+    update.message.reply_text('Вы не любите астрономию.')
 
 
 def show_all_users(bot, update):
