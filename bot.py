@@ -83,6 +83,7 @@ def help_handler(bot, update):
     /sun - текущая информация о солнце в Москве
     /solar - немного инфы о нашей солнечной системе
     /quiz - небольшая викторина
+    /my_quiz_res - мои результаты
     * - необязательный параметр
     """
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
@@ -267,7 +268,7 @@ def quiz_answer_handler(bot, update):
     Правильных ответов: {}
     """.format(question.question_str, query.from_user.username, status,
                question.quest_counter, question.true_answ_counter)
-    bot.edit_message_text(text=bot_text,
+    bot.edit_message_text(bot_text,
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
 
