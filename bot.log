@@ -137,3 +137,9 @@
 2018-07-30 15:42:55,074 - INFO - Bot started
 2018-07-30 15:42:58,214 - INFO - Bot started
 2018-07-30 15:43:01,055 - INFO - Bot started
+2018-07-30 15:57:22,421 - INFO - Bot started
+2018-07-30 15:57:23,720 - ERROR - Error while bootstrap del webhook: urllib3 HTTPError ('Connection aborted.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None))
+2018-07-30 15:57:23,720 - WARNING - Failed bootstrap phase; try=1 max_retries=-1
+2018-07-30 15:57:31,476 - ERROR - Error while bootstrap del webhook: urllib3 HTTPError ('Connection aborted.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None))
+2018-07-30 15:57:31,476 - WARNING - Failed bootstrap phase; try=2 max_retries=-1
+2018-07-30 15:57:31,790 - INFO - Received signal 2 (SIGINT), stopping...
