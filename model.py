@@ -7,7 +7,8 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     telegram_id = Column(String, index=True, unique=True)
-    quiz_res = Column(Integer, default='0/0')
+    answers_counter = Column(Integer, default=0)
+    correct_answers_counter = Column(Integer, default=0)
     last_quiz_date = Column(Date, default=datetime.datetime.now().date())
 
     def __init__(self, telegram_id):

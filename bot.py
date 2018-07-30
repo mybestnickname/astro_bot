@@ -248,19 +248,16 @@ def quiz_answer_handler(bot, update):
     question = session.query(Question).filter(Question.id == q_id).first()
     # увеличиваем счётчик сколько раз задавался этот вопрос
     question.quest_counter += 1
-    # вынимаем и увеличиваем счётчик ответов пользователя
-    answers, correct = user.quiz_res.split('/')
-    answers = int(answers) + 1
+    # увеличиваем счётчик ответов пользователя
+    user.answers_counter += 1
     if status == 'true':
         # увеличиваем счётчик правильных ответов на вопрос
         question.true_answ_counter += 1
         bot.answer_callback_query(query.id, text='Правильно!')
         # увеличиваем счётчик правильных ответов пользователя
-        correct += 1
+        user.correct_answers_counter += 1
     else:
         bot.answer_callback_query(query.id, text='Неверно.')
-        # обновим статистику пользователся в бд
-        user.quiz_res = "{}/{}".format(answers, correct)
     session.commit()
     bot_text = """
     Вопрос: {}
@@ -284,14 +281,13 @@ def show_user_quiz_res(bot, update):
         User.telegram_id == update.message.from_user.id).first()
     if user:
         update.message.reply_text('Привет юзернейм')
-        answers, correct = user.quiz_res.split('/')
         bot_text = """Пользователь {} последний раз отвечал на вопрос {}.
         Всего ответов: {}
         Правильных: {}
             """.format(update.message.from_user.username,
                        user.last_quiz_date.strftime("%d.%m.%Y"),
-                       answers,
-                       correct)
+                       user.answers_counter,
+                       user.correct_asnwers_counter)
         update.message.reply_text(bot_text)
     else:
         update.message.reply_text('Вы не любите астрономию.')
@@ -304,7 +300,7 @@ def show_all_users(bot, update):
     users = session.query(User).all()
     for user in users:
         bot_text = 'Пользователь. id: {} quiz_res: {}'.format(
-            user.telegram_id, user.quiz_res)
+            user.telegram_id)
         bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
@@ -349,4 +345,5 @@ if __name__ == '__main__':
     Base.metadata.create_all(engine)
     session = Session()
     main()
+
 # @run_async - - - для асинхронной работы с несколькими чатами
