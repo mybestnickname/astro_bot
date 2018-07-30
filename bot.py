@@ -210,13 +210,13 @@ def quiz_handler(bot, update):
     # выводим
     rand_question = session.query(Question).order_by(func.random()).first()
     question_text = rand_question.question_str
-    buttons = [InlineKeyboardButton(text=rand_question.answ_1,
+    buttons = [InlineKeyboardButton(text='rand_question.answ_1',
                                     callback_data="quiz_answer false"),
-               InlineKeyboardButton(text=rand_question.answ_2,
+               InlineKeyboardButton(text='rand_question.answ_2',
                                     callback_data="quiz_answer false"),
-               InlineKeyboardButton(text=rand_question.answ_3,
+               InlineKeyboardButton(text='rand_question.answ_3',
                                     callback_data="quiz_answer false"),
-               InlineKeyboardButton(text=rand_question.answ_4,
+               InlineKeyboardButton(text='rand_question.answ_4',
                                     callback_data="quiz_answer true")]
     #shuffle(buttons)
     reply_markup = InlineKeyboardMarkup([buttons])
