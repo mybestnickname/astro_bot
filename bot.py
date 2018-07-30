@@ -287,7 +287,7 @@ def show_user_quiz_res(bot, update):
             """.format(update.message.from_user.username,
                        user.last_quiz_date.strftime("%d.%m.%Y"),
                        user.answers_counter,
-                       user.correct_asnwers_counter)
+                       user.correct_answers_counter)
         update.message.reply_text(bot_text)
     else:
         update.message.reply_text('Вы не любите астрономию.')
@@ -299,7 +299,7 @@ def show_all_users(bot, update):
     """
     users = session.query(User).all()
     for user in users:
-        bot_text = 'Пользователь. id: {} quiz_res: {}'.format(
+        bot_text = 'Пользователь. id: {}'.format(
             user.telegram_id)
         bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
