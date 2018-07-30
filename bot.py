@@ -202,27 +202,24 @@ def quiz_handler(bot, update):
     Функция отправляющая рандомный вопрос из бд в чатик,
     пользователю который задал /quiz
     """
-    # вытаскиваем вопрос
-    # перемешиваем его ответы
     # у правильного callback_data = quiz_answer true
     # у всех остальных = false
-    # перемешиваем в списке
-    # выводим
+    # в бд правильный ответ, всегда 4ый
     rand_question = session.query(Question).order_by(func.random()).first()
-    question_text = rand_question.question_str
     buttons = [InlineKeyboardButton(text=rand_question.answ_1,
-                                    callback_data="quiz_answer false"),
+                                    callback_data="quiz_answer false {}".format(rand_question.id)),
                InlineKeyboardButton(text=rand_question.answ_2,
-                                    callback_data="quiz_answer false"),
+                                    callback_data="quiz_answer false {}".format(rand_question.id)),
                InlineKeyboardButton(text=rand_question.answ_3,
-                                    callback_data="quiz_answer false"),
+                                    callback_data="quiz_answer false {}".format(rand_question.id)),
                InlineKeyboardButton(text=rand_question.answ_4,
-                                    callback_data="quiz_answer true")]
+                                    callback_data="quiz_answer true {}".format(rand_question.id))]
+    # перемешаем варианты ответа
     shuffle(buttons)
     reply_markup = InlineKeyboardMarkup([buttons])
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
-    update.message.reply_text('Please choose:',
+    update.message.reply_text(text=rand_question.question_str,
                               reply_markup=reply_markup)
 
 
@@ -237,21 +234,40 @@ def quiz_answer_handler(bot, update):
     user = session.query(User).filter(
         User.telegram_id == query.from_user.id).first()
     if not user:
-        new_user = User(telegram_id=query.from_user.id)
-        session.add(new_user)
-        session.commit()
+        user = User(telegram_id=query.from_user.id)
+        session.add(user)
     else:
         user.last_quiz_date = datetime.datetime.now().date()
-
-    # query.data - ответ на вопрос правильный или нет?
-    # вынимаем чат айди
-    # вынимаем пользователя
-    # пишем какой пользователь и какой вопрос задавался
-    # в чатик где это спросилось
-    # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
-    bot.answer_callback_query(query.id, text='Ответ вижу')
-    # тут выводить Текст вопроса, статистику, правильный ответ и кто ответил
-    bot.edit_message_text(text="Selected option: {}".format(query.data),
+    # вынимаем idшнки из callback_data
+    patern, status, q_id = int(query.data.split())
+    q_id = int(q_id)
+    # вынимаем вопрос из бд
+    question = session.query(Question).filter(Question.id == q_id).first()
+    # увеличиваем счётчик сколько раз задавался этот вопрос
+    question.quest_counter += 1
+    # вынимаем и увеличиваем счётчик ответов пользователя
+    answers, correct = user.quiz_res.split('/')
+    answers = int(answers) + 1
+    if status == 'true':
+        # увеличиваем счётчик правильных ответов на вопрос
+        question.true_answ_counter += 1
+        bot.answer_callback_query(query.id, text='Правильно!')
+        # увеличиваем счётчик правильных ответов пользователя
+        correct += 1
+    else:
+        bot.answer_callback_query(query.id, text='Неверно.')
+    # обновим статистику пользователся в бд
+    user.quiz_res = "{}/{}".format(answers, correct)
+    session.commit()
+    bot_text = """
+    Вопрос: {}
+    Ответил: {}
+    Статус: {}
+    Этот вопрос задавался {} раз.
+    Правильных ответов: {}
+    """.format(question.question_str, query.from_user.username, status,
+               question.quest_counter, question.true_answ_counter)
+    bot.edit_message_text(text=bot_text,
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
 
@@ -264,7 +280,7 @@ def show_user_quiz_res(bot, update):
     user = session.query(User).filter(
         User.telegram_id == update.message.from_user.id).first()
     if user:
-        answers, correct = user.last_quiz_res.split('/')
+        answers, correct = user.quiz_res.split('/')
         bot_text = """Пользователь {} последний раз отвечал на вопрос {}.
         Всего ответов: {}
         Правильных: {}
@@ -284,7 +300,7 @@ def show_all_users(bot, update):
     users = session.query(User).all()
     for user in users:
         bot_text = 'Пользователь. id: {} quiz_res: {}'.format(
-            user.telegram_id, user.last_quiz_res)
+            user.telegram_id, user.quiz_res)
         bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 

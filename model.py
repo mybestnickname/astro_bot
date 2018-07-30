@@ -7,12 +7,12 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     telegram_id = Column(String, index=True, unique=True)
-    last_quiz_res = Column(Integer, default='0/0')
+    quiz_res = Column(Integer, default='0/0')
     last_quiz_date = Column(Date, default=datetime.datetime.now().date())
 
     def __init__(self, telegram_id, last_quiz_res):
         self.telegram_id = telegram_id
-        self.last_quiz_res = last_quiz_res
+        self.quiz_res = quiz_res
 
 
 class Question(Base):
