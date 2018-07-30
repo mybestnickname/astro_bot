@@ -241,7 +241,7 @@ def quiz_answer_handler(bot, update):
     else:
         user.last_quiz_date = datetime.datetime.now().date()
     # вынимаем idшнки из callback_data
-    patern, status, q_id = int(query.data.split())
+    patern, status, q_id = query.data.split()
     q_id = int(q_id)
     # вынимаем вопрос из бд
     question = session.query(Question).filter(Question.id == q_id).first()
