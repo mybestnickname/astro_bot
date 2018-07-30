@@ -241,21 +241,21 @@ def quiz_answer_handler(bot, update):
     else:
         user.last_quiz_date = datetime.datetime.now().date()
     # вынимаем idшнки из callback_data
-    # patern, status, q_id = int(query.data.split())
-    # q_id = int(q_id)
+    patern, status, q_id = int(query.data.split())
+    q_id = int(q_id)
     # вынимаем вопрос из бд
-    # question = session.query(Question).filter(Question.id == q_id).first()
+    question = session.query(Question).filter(Question.id == q_id).first()
     # увеличиваем счётчик сколько раз задавался этот вопрос
     # question.quest_counter += 1
     # вынимаем и увеличиваем счётчик ответов пользователя
     # answers, correct = user.quiz_res.split('/')
     # answers = int(answers) + 1
-    #if status == 'true':
-        # увеличиваем счётчик правильных ответов на вопрос
-        # question.true_answ_counter += 1
+    # if status == 'true':
+    # увеличиваем счётчик правильных ответов на вопрос
+    # question.true_answ_counter += 1
     #    bot.answer_callback_query(query.id, text='Правильно!')
-        # увеличиваем счётчик правильных ответов пользователя
-        # correct += 1
+    # увеличиваем счётчик правильных ответов пользователя
+    # correct += 1
     # else:
     #    bot.answer_callback_query(query.id, text='Неверно.')
     # обновим статистику пользователся в бд
@@ -269,7 +269,7 @@ def quiz_answer_handler(bot, update):
     # Правильных ответов: {}
     # """.format(question.question_str, query.from_user.username, status,
     #            question.quest_counter, question.true_answ_counter)
-    bot_text = query.data
+    bot_text = '{} {}'.format(question.question_str, status)
     bot.edit_message_text(bot_text,
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
