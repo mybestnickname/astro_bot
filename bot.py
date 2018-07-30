@@ -6,8 +6,10 @@ from base_def import Session, engine, Base
 import logging
 from settings import constells_dict
 from settingsbot import PROXY, TELEGRAM_API_KEY
+from sqlalchemy.sql.expression import func
 import ephem
 import datetime
+from random import shuffle
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
@@ -200,19 +202,28 @@ def quiz_handler(bot, update):
     Функция отправляющая рандомный вопрос из бд в чатик,
     пользователю который задал /quiz
     """
-    question_text = 'Мегавопрос:'
-    buttons = [InlineKeyboardButton(text='1',
-                                    callback_data="quiz_answer ok"),
-               InlineKeyboardButton(text='2',
-                                    callback_data="quiz_answer ok"),
-               InlineKeyboardButton(text='3',
-                                    callback_data="quiz_answer ok"),
-               InlineKeyboardButton(text='4',
-                                    callback_data="quiz_answer ok")]
+    # вытаскиваем вопрос
+    # перемешиваем его ответы
+    # у правильного callback_data = quiz_answer true
+    # у всех остальных = false
+    # перемешиваем в списке
+    # выводим
+    rand_question = session.query(Question).order_by(func.random()).first()
+    question_text = rand_question.question_str
+    buttons = [InlineKeyboardButton(text=rand_question.answ_1,
+                                    callback_data="quiz_answer false"),
+               InlineKeyboardButton(text=rand_question.answ_2,
+                                    callback_data="quiz_answer false"),
+               InlineKeyboardButton(text=rand_question.answ_3,
+                                    callback_data="quiz_answer false"),
+               InlineKeyboardButton(text=rand_question.answ_4,
+                                    callback_data="quiz_answer true")]
+    shuffle(buttons)
     reply_markup = InlineKeyboardMarkup([buttons])
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
-    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+    update.message.reply_text('Please choose:', text=question_text,
+                              reply_markup=reply_markup)
 
 
 def quiz_answer_handler(bot, update):
@@ -239,21 +250,10 @@ def quiz_answer_handler(bot, update):
     # в чатик где это спросилось
     # сообщение с вопросом редактируем чтоб нельзя было ещё раз его отвечать
     bot.answer_callback_query(query.id, text='Ответ вижу')
-
+    # тут выводить Текст вопроса, статистику, правильный ответ и кто ответил
     bot.edit_message_text(text="Selected option: {}".format(query.data),
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
-
-
-def show_all_users(bot, update):
-    """
-    Печатаем список всех юзеров в бд
-    """
-    users = session.query(User).all()
-    for user in users:
-        bot_text = 'Пользователь. id: {} quiz_res: {}'.format(
-            user.telegram_id, user.last_quiz_res)
-        bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
 def show_user_quiz_res(bot, update):
@@ -275,6 +275,17 @@ def show_user_quiz_res(bot, update):
         update.message.reply_text(bot_text)
     else:
         update.message.reply_text('Вы не любите астрономию.')
+
+
+def show_all_users(bot, update):
+    """
+    Печатаем список всех юзеров в бд
+    """
+    users = session.query(User).all()
+    for user in users:
+        bot_text = 'Пользователь. id: {} quiz_res: {}'.format(
+            user.telegram_id, user.last_quiz_res)
+        bot.send_message(chat_id=update.message.chat.id, text=bot_text)
 
 
 def handler_adder(updt):

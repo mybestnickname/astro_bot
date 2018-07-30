@@ -77,3 +77,31 @@
 2018-07-27 16:19:44,511 - WARNING - Failed bootstrap phase; try=3 max_retries=-1
 2018-07-27 16:19:52,720 - INFO - Received signal 2 (SIGINT), stopping...
 2018-07-27 16:19:53,482 - WARNING - Exiting immediately!
+2018-07-30 10:32:46,006 - INFO - Bot started
+2018-07-30 10:32:47,061 - ERROR - Error while bootstrap del webhook: urllib3 HTTPError ('Connection aborted.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None))
+2018-07-30 10:32:47,061 - WARNING - Failed bootstrap phase; try=1 max_retries=-1
+2018-07-30 10:32:54,679 - ERROR - Error while bootstrap del webhook: urllib3 HTTPError ('Connection aborted.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None))
+2018-07-30 10:32:54,679 - WARNING - Failed bootstrap phase; try=2 max_retries=-1
+2018-07-30 10:33:06,007 - ERROR - Error while bootstrap del webhook: urllib3 HTTPError ('Connection aborted.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None))
+2018-07-30 10:33:06,007 - WARNING - Failed bootstrap phase; try=3 max_retries=-1
+2018-07-30 10:33:23,175 - ERROR - Error while bootstrap del webhook: urllib3 HTTPError ('Connection aborted.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None))
+2018-07-30 10:33:23,176 - WARNING - Failed bootstrap phase; try=4 max_retries=-1
+2018-07-30 10:33:39,733 - INFO - Received signal 2 (SIGINT), stopping...
+2018-07-30 10:33:48,490 - WARNING - Exiting immediately!
+2018-07-30 10:39:04,435 - INFO - Bot started
+2018-07-30 10:39:10,381 - INFO - Bot started
+2018-07-30 10:39:14,270 - INFO - Bot started
+2018-07-30 10:39:18,165 - INFO - Bot started
+2018-07-30 10:39:21,671 - INFO - Bot started
+2018-07-30 10:39:25,449 - INFO - Bot started
+2018-07-30 10:39:29,751 - INFO - Bot started
+2018-07-30 11:02:47,619 - INFO - Bot started
+2018-07-30 11:03:20,500 - INFO - Bot started
+2018-07-30 11:03:22,946 - INFO - Bot started
+2018-07-30 11:03:31,205 - INFO - Bot started
+2018-07-30 11:03:41,002 - INFO - Bot started
+2018-07-30 11:03:42,783 - INFO - Bot started
+2018-07-30 11:03:44,034 - INFO - Bot started
+2018-07-30 11:03:45,238 - INFO - Bot started
+2018-07-30 11:03:46,407 - INFO - Bot started
+2018-07-30 11:03:47,648 - INFO - Bot started
