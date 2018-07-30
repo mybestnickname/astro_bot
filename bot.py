@@ -84,6 +84,7 @@ def help_handler(bot, update):
     /solar - немного инфы о нашей солнечной системе
     /quiz - небольшая викторина
     /my_quiz_res - мои результаты
+    /all_users
     * - необязательный параметр
     """
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
@@ -241,33 +242,34 @@ def quiz_answer_handler(bot, update):
         user.last_quiz_date = datetime.datetime.now().date()
     # вынимаем idшнки из callback_data
     patern, status, q_id = int(query.data.split())
-    q_id = int(q_id)
+    # q_id = int(q_id)
     # вынимаем вопрос из бд
-    question = session.query(Question).filter(Question.id == q_id).first()
+    # question = session.query(Question).filter(Question.id == q_id).first()
     # увеличиваем счётчик сколько раз задавался этот вопрос
-    question.quest_counter += 1
+    # question.quest_counter += 1
     # вынимаем и увеличиваем счётчик ответов пользователя
-    answers, correct = user.quiz_res.split('/')
-    answers = int(answers) + 1
+    # answers, correct = user.quiz_res.split('/')
+    # answers = int(answers) + 1
     if status == 'true':
         # увеличиваем счётчик правильных ответов на вопрос
-        question.true_answ_counter += 1
+        # question.true_answ_counter += 1
         bot.answer_callback_query(query.id, text='Правильно!')
         # увеличиваем счётчик правильных ответов пользователя
-        correct += 1
+        # correct += 1
     else:
         bot.answer_callback_query(query.id, text='Неверно.')
     # обновим статистику пользователся в бд
-    user.quiz_res = "{}/{}".format(answers, correct)
+    # user.quiz_res = "{}/{}".format(answers, correct)
     session.commit()
-    bot_text = """
-    Вопрос: {}
-    Ответил: {}
-    Статус: {}
-    Этот вопрос задавался {} раз.
-    Правильных ответов: {}
-    """.format(question.question_str, query.from_user.username, status,
-               question.quest_counter, question.true_answ_counter)
+    # bot_text = """
+    # Вопрос: {}
+    # Ответил: {}
+    # Статус: {}
+    # Этот вопрос задавался {} раз.
+    # Правильных ответов: {}
+    # """.format(question.question_str, query.from_user.username, status,
+    #            question.quest_counter, question.true_answ_counter)
+    bot_text = 'blblblblblbl'
     bot.edit_message_text(bot_text,
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
@@ -347,5 +349,4 @@ if __name__ == '__main__':
     Base.metadata.create_all(engine)
     session = Session()
     main()
-
 # @run_async - - - для асинхронной работы с несколькими чатами
