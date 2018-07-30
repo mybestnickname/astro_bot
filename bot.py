@@ -208,8 +208,8 @@ def quiz_handler(bot, update):
     # у всех остальных = false
     # перемешиваем в списке
     # выводим
-    #rand_question = session.query(Question).order_by(func.random()).first()
-    #question_text = rand_question.question_str
+    rand_question = session.query(Question).order_by(func.random()).first()
+    question_text = rand_question.question_str
     buttons = [InlineKeyboardButton(text='rand_question.answ_1',
                                     callback_data="quiz_answer false"),
                InlineKeyboardButton(text='rand_question.answ_2',
