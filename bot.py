@@ -316,8 +316,8 @@ def handler_adder(updt):
     updt.dispatcher.add_handler(CommandHandler("help", help_handler))
     updt.dispatcher.add_handler(CommandHandler("quiz", quiz_handler))
     updt.dispatcher.add_handler(CommandHandler("all_users", show_all_users))
-    updt.dispatcher.add_handler(CommandHandler(
-        "my_quiz_res", show_user_quiz_res))
+    updt.dispatcher.add_handler(CommandHandler("my_quiz_res",
+                                               show_user_quiz_res))
     # обработчик ответа на вопрос
     updt.dispatcher.add_handler(CallbackQueryHandler(quiz_answer_handler,
                                                      pattern='^quiz_answer.*'))
@@ -332,9 +332,9 @@ def main():
     # updt = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY)
     # запускаем бота
     updt = Updater(TELEGRAM_API_KEY)
+    # прикручиваем обработчики
     handler_adder(updt)
     updt.start_polling()
-    # прикручиваем обработчики
     updt.idle()
 
 
@@ -346,4 +346,10 @@ if __name__ == '__main__':
     session = Session()
     main()
 
-# @run_async - - - для асинхронной работы с несколькими чатами
+    # добавить вопросов
+    # убрать api key бота для выдачи
+    # зарефакторить
+    # описание всех функций добавить
+    # не всратый вывод в телегу
+    # проверить, что всё робит как надо, затем выложить
+    # потом выкладывать
