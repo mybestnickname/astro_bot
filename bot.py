@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyMarkup
 from model import User, Question
 from base_def import Session, engine, Base
 import logging
@@ -205,17 +205,17 @@ def quiz_handler(bot, update):
     # у всех остальных = false
     # в бд правильный ответ, всегда 4ый
     rand_question = session.query(Question).order_by(func.random()).first()
-    buttons = [InlineKeyboardButton(text=rand_question.answ_1,
+    buttons = [KeyboardButton(text=rand_question.answ_1,
                                     callback_data="quiz_answer false {}".format(rand_question.id)),
-               InlineKeyboardButton(text=rand_question.answ_2,
+               KeyboardButton(text=rand_question.answ_2,
                                     callback_data="quiz_answer false {}".format(rand_question.id)),
-               InlineKeyboardButton(text=rand_question.answ_3,
+               KeyboardButton(text=rand_question.answ_3,
                                     callback_data="quiz_answer false {}".format(rand_question.id)),
-               InlineKeyboardButton(text=rand_question.answ_4,
+               KeyboardButton(text=rand_question.answ_4,
                                     callback_data="quiz_answer true {}".format(rand_question.id))]
     # перемешаем варианты ответа
     shuffle(buttons)
-    reply_markup = InlineKeyboardMarkup([buttons])
+    reply_markup = ReplyMarkup([buttons], resize_keyboard=1)
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
     update.message.reply_text(text=rand_question.question_str,
