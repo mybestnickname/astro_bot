@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyMarkup
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup
 from model import User, Question
 from base_def import Session, engine, Base
 import logging
@@ -215,7 +215,7 @@ def quiz_handler(bot, update):
                                     callback_data="quiz_answer true {}".format(rand_question.id))]
     # перемешаем варианты ответа
     shuffle(buttons)
-    reply_markup = InlineKeyboardMarkup([buttons], resize_keyboard=1)
+    reply_markup = ReplyKeyboardMarkup([buttons], resize_keyboard=1)
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
     update.message.reply_text(text=rand_question.question_str,
