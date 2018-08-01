@@ -342,14 +342,7 @@ if __name__ == '__main__':
     # создаём схему
     Base.metadata.create_all(engine)
     session = Session()
-    # main()
-    q = Question(question_str='Эта планета могла стать звездой, но не набрала достаточно массы:',
-                 answ_1='Меркурий',
-                 answ_2='Нептун',
-                 answ_3='Сатурн',
-                 answ_4='Юпитер')
-    session.add(q)
-    session.commit()
+    main()
 
     # добавить вопросов
     # убрать api key бота для выдачи
