@@ -28,6 +28,25 @@ def start_handler(bot, update):
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
 
 
+def help_handler(bot, update):
+    """
+    Функция обработчик команды /help
+    Выводит список доступных команд с описанием
+    """
+
+    bot_text = """
+    /help - список команд
+    /planet - [Имя планеты]* [yyyy/mm/dd]* - выводит инфу за дату
+    /moon - текущая информация о луне
+    /sun - текущая информация о солнце в Москве
+    /solar - немного инфы о нашей солнечной системе
+    /quiz - небольшая викторина
+    /my_quiz_res - мои результаты
+    * - необязательный параметр
+    """
+    bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
+
+
 def planet_handler(bot, update):
     """
     обработчик команды /planet
@@ -42,7 +61,7 @@ def planet_handler(bot, update):
         all_pl = '\n'.join('{}: {}'.format(value[1], value[2])
                            for value in ephem._libastro.builtin_planets()
                            if value[1].lower() == 'planet')
-        bot_text = 'Список доступных планет:\n{}'.format(all_pl)
+        bot_text = 'Список доступных объектов:\n{}'.format(all_pl)
         bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
         return True
     splitted_msg = update.message.text.split(' ')
@@ -53,7 +72,7 @@ def planet_handler(bot, update):
     try:
         planet_info = getattr(ephem, planet_name.capitalize())(ephem_date)
     except AttributeError:
-        error_bot_msg = 'Такой планеты/спутника не найдено. Список /planet.'
+        error_bot_msg = 'Такого объекта не найдено. Список /planet.'
         bot.sendMessage(chat_id=update.message.chat.id, text=error_bot_msg)
         return False
     except ValueError:
@@ -66,27 +85,12 @@ def planet_handler(bot, update):
     full_constell = '{}({})'.format(
         ephem.constellation(planet_info)[1], ru_conts_name)
     earth_dist_km = planet_info.earth_distance * 149600000
-    bot_text = '{} находится в созвездии {}. Расстояние до земли: {} км. Дата: {}'.format(planet_name, full_constell,
-                                                                                          earth_dist_km, ephem_date)
-    bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
-
-
-def help_handler(bot, update):
-    """
-    Функция обработчик команды /help
-    Выводит список доступных команд с описанием
-    """
     bot_text = """
-    /help - список команд
-    /planet - [Имя планеты]* [yyyy/mm/dd]* - выводит инфу за дату
-    /moon - текущая информация о луне
-    /sun - текущая информация о солнце в Москве
-    /solar - немного инфы о нашей солнечной системе
-    /quiz - небольшая викторина
-    /my_quiz_res - мои результаты
-    /all_users
-    * - необязательный параметр
-    """
+    {} находится в созвездии {}.
+    Расстояние до земли: {} км.
+    Дата: {}
+    """.format(planet_name, full_constell,
+               earth_dist_km, ephem_date)
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
 
 
@@ -102,16 +106,15 @@ def moon_handler(bot, update):
     full_moon_date = ephem.next_full_moon(ephem_date)
     moon_info = ephem.Moon(ephem_date)
     # создадим из них строку
-    bot_text = ("""
-        Луна растёт с {}
-        Полнолуние наступит: {}
-        Луну видно на: {:.3f} %
-        Дистанция до земли: {:.3f} км.
-        """.format(growth_start_date,
-                   full_moon_date,
-                   moon_info.moon_phase * 100,
-                   moon_info.earth_distance * 149600000))
-    # напишем её в чатик
+    bot_text = """
+    Луна растёт с {}
+    Полнолуние наступит: {}
+    Луну видно на: {:.3f} %
+    Дистанция до земли: {:.3f} км.
+    """.format(growth_start_date,
+               full_moon_date,
+               moon_info.moon_phase * 100,
+               moon_info.earth_distance * 149600000)
     bot.sendMessage(chat_id=update.message.chat.id, text=bot_text)
 
 
@@ -144,11 +147,7 @@ def sun_handler(bot, update):
     now_time = datetime.datetime.now()
     ephem_datetime = now_time.strftime("%Y/%m/%d %H:%M:%S")
     sun_info = ephem.Sun(ephem_datetime)
-    # восход и закат по мск в этот день
-    # расстояние до земли
-    # задать обозревателья в Мск через ephem.city('Moscow') не получилось
-    # непонятно почему, но тогда время восхода неверное(мб кроме horizon нужно больше параметров)
-    # буду задавать обозревателя в мск по latitude
+    # задаю обозревателя по latitude(Moscow)
     moscow_obs = ephem.Observer()
     moscow_obs.lat = '51:28:38'
     moscow_obs.date = ephem_datetime
@@ -173,8 +172,6 @@ def message_handler(bot, update):
     """
     Обработчик прямого текста к боту
     """
-    # user_text = update.message.text
-    # logging.info(user_text)
     username = update.message.from_user.username
     update.message.reply_text('@{} используй /help!'.format(username))
 
@@ -185,7 +182,7 @@ def strange_command_handler(bot, update):
     Выводит подсказку, что можно ввести /help
     """
     bot_message = """
-    Не известная команда.
+    Неизвестная команда.
     Используйте /help для отображения списка команд.
     """
     update.message.reply_text(bot_message)
@@ -241,11 +238,10 @@ def quiz_answer_handler(bot, update):
         session.commit()
     else:
         user.last_quiz_date = datetime.datetime.now().date()
-    # вынимаем idшнки из callback_data
+    # вынимаем callback_data
     patern, status, q_id = query.data.split()
-    q_id = int(q_id)
     # вынимаем вопрос из бд
-    question = session.query(Question).filter(Question.id == q_id).first()
+    question = session.query(Question).filter(Question.id == int(q_id)).first()
     # увеличиваем счётчик сколько раз задавался этот вопрос
     question.quest_counter += 1
     # увеличиваем счётчик ответов пользователя
@@ -263,7 +259,7 @@ def quiz_answer_handler(bot, update):
     Вопрос: {}
     Ответил: {}
     Статус: {}
-    Этот вопрос задавался {} раз.
+    Этот вопрос задавался {} раз
     Правильных ответов: {}
     """.format(question.question_str, query.from_user.username, status,
                question.quest_counter, question.true_answ_counter)
@@ -274,6 +270,7 @@ def quiz_answer_handler(bot, update):
 
 def show_user_quiz_res(bot, update):
     """
+    обработчик /my_quiz_res
     Функция выводит в чат результаты прохождения квеста для пользователя
     дату последнего прохождения и кол-во вопросов/кол-во правильных ответов
     """
@@ -290,6 +287,7 @@ def show_user_quiz_res(bot, update):
                        user.correct_answers_counter)
         update.message.reply_text(bot_text)
     else:
+        # если пользователь не найден => ещё не учавствовал в викторине
         update.message.reply_text('Вы не любите астрономию.')
 
 
@@ -306,7 +304,7 @@ def show_all_users(bot, update):
 
 def handler_adder(updt):
     """
-    Функция определяющая функции - обработчики комманд
+    Функция определяющая обработчики комманд
     """
     updt.dispatcher.add_handler(CommandHandler("start", start_handler))
     updt.dispatcher.add_handler(CommandHandler("planet", planet_handler))
