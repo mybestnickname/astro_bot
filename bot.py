@@ -205,17 +205,21 @@ def quiz_handler(bot, update):
     # у всех остальных = false
     # в бд правильный ответ, всегда 4ый
     rand_question = session.query(Question).order_by(func.random()).first()
-    buttons = [[InlineKeyboardButton(text=rand_question.answ_1,
-                                     callback_data="quiz_answer false {}".format(rand_question.id))],
-               [InlineKeyboardButton(text=rand_question.answ_2,
-                                     callback_data="quiz_answer false {}".format(rand_question.id))],
-               [InlineKeyboardButton(text=rand_question.answ_3,
-                                     callback_data="quiz_answer false {}".format(rand_question.id))],
-               [InlineKeyboardButton(text=rand_question.answ_4,
-                                     callback_data="quiz_answer true {}".format(rand_question.id))]]
+    # correct_answ = rand_question.answ_4
+    # answs = [[rand_question.answ_1], [rand_question.answ_2],
+    #        [rand_question.answ_3], [rand_question.answ_4]]
+
+    buttons = [InlineKeyboardButton(text=rand_question.answ_1,
+                                    callback_data="quiz_answer false {}".format(rand_question.id)),
+               InlineKeyboardButton(text=rand_question.answ_2,
+                                    callback_data="quiz_answer false {}".format(rand_question.id)),
+               InlineKeyboardButton(text=rand_question.answ_3,
+                                    callback_data="quiz_answer false {}".format(rand_question.id)),
+               InlineKeyboardButton(text=rand_question.answ_4,
+                                    callback_data="quiz_answer true {}".format(rand_question.id))]
     # перемешаем варианты ответа
     shuffle(buttons)
-    reply_markup = InlineKeyboardMarkup([buttons], resize_keyboard=True)
+    reply_markup = InlineKeyboardMarkup(buttons)
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
     update.message.reply_text(text=rand_question.question_str,
