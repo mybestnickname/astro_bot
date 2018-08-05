@@ -221,7 +221,7 @@ def quiz_handler(bot, update):
                                     callback_data="quiz_answer true {}".format(rand_question.id))]
     # перемешаем варианты ответа
     shuffle(buttons)
-    reply_markup = InlineKeyboardMarkup(buttons)
+    reply_markup = InlineKeyboardMarkup([buttons])
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
     update.message.reply_text(text=rand_question.question_str,
