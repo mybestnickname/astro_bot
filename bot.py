@@ -205,6 +205,8 @@ def quiz_handler(bot, update):
     # у всех остальных = false
     # в бд правильный ответ, всегда 4ый
     rand_question = session.query(Question).order_by(func.random()).first()
+    if not rand_question:
+        update.message.reply_text(text='Вопросов не найдено.')
     # correct_answ = rand_question.answ_4
     # answs = [[rand_question.answ_1], [rand_question.answ_2],
     #        [rand_question.answ_3], [rand_question.answ_4]]
@@ -300,6 +302,9 @@ def show_all_users(bot, update):
     Печатаем список всех юзеров в бд
     """
     users = session.query(User).all()
+    if not users:
+        bot_text = 'Тут никого нет. :('
+        bot.send_message(chat_id=update.message.chat.id, text=bot_text)
     for user in users:
         bot_text = 'Пользователь. id: {}'.format(
             user.telegram_id)
