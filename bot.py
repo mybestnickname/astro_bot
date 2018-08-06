@@ -9,6 +9,7 @@ from settingsbot import PROXY, TELEGRAM_API_KEY
 from sqlalchemy.sql.expression import func
 import ephem
 import datetime
+import collections
 from random import shuffle
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
@@ -205,22 +206,21 @@ def quiz_handler(bot, update):
     # у всех остальных = false
     # в бд правильный ответ, всегда 4ый
     rand_question = session.query(Question).order_by(func.random()).first()
-    if not rand_question:
-        update.message.reply_text(text='Вопросов не найдено.')
-    # correct_answ = rand_question.answ_4
-    # answs = [[rand_question.answ_1], [rand_question.answ_2],
-    #        [rand_question.answ_3], [rand_question.answ_4]]
-
-    buttons = [InlineKeyboardButton(text=rand_question.answ_1,
-                                    callback_data="quiz_answer false {}".format(rand_question.id)),
-               InlineKeyboardButton(text=rand_question.answ_2,
-                                    callback_data="quiz_answer false {}".format(rand_question.id)),
-               InlineKeyboardButton(text=rand_question.answ_3,
-                                    callback_data="quiz_answer false {}".format(rand_question.id)),
-               InlineKeyboardButton(text=rand_question.answ_4,
-                                    callback_data="quiz_answer true {}".format(rand_question.id))]
-    # перемешаем варианты ответа
-    shuffle(buttons)
+    correct_answ = rand_question.answ_4
+    answs = [rand_question.answ_1, rand_question.answ_2,
+             rand_question.answ_3, rand_question.answ_4]
+    shuffle(answs)
+    answ_dict = {str(index + 1): answ for index, answ in enumerate(answs)}
+    print(correct_answ)
+    od_answ_dict = collections.OrderedDict(sorted(answ_dict.items()))
+    for k, v in od_answ_dict.items():
+        print(k, v)
+    buttons = [InlineKeyboardButton(text=str(number),
+                                    callback_data="quiz_answer true {}".format(rand_question.id))
+               if answ == correct_answ
+               else InlineKeyboardButton(text=str(number),
+                                         callback_data="quiz_answer false {}".format(rand_question.id))
+               for number, answ in od_answ_dict.items()]
     reply_markup = InlineKeyboardMarkup([buttons])
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
