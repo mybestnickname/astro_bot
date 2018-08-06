@@ -269,12 +269,12 @@ def quiz_answer_handler(bot, update):
     status = 'Верно!' if status == 'true' else 'Неверно.'
     session.commit()
     bot_text = """\n
-    Вопрос: {}
+    Вопрос: "{}"
     Ответил: {}
     {}
     Этот вопрос задавался {} раз(а)
     Правильных ответов: {}
-    """.format(question.question_str, query.from_user.username, status,
+    """.format(question.question_str[:-1], query.from_user.username, status,
                question.quest_counter, question.true_answ_counter)
     bot.edit_message_text(bot_text,
                           chat_id=query.message.chat_id,
