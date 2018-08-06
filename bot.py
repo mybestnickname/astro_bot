@@ -211,10 +211,15 @@ def quiz_handler(bot, update):
              rand_question.answ_3, rand_question.answ_4]
     shuffle(answs)
     answ_dict = {str(index + 1): answ for index, answ in enumerate(answs)}
-    print(correct_answ)
+    # print(correct_answ)
     od_answ_dict = collections.OrderedDict(sorted(answ_dict.items()))
-    for k, v in od_answ_dict.items():
-        print(k, v)
+    # for k, v in od_answ_dict.items():
+    #     print(k, v)
+    answs_str = '\n'.join('{}){}'.format(number, answ) for number, answ
+                          in od_answ_dict.items())
+    q_str = '{}'.format(rand_question.question_str)
+    q_str = '{}\n{}'.format(q_str, answs_str)
+
     buttons = [InlineKeyboardButton(text=str(number),
                                     callback_data="quiz_answer true {}".format(rand_question.id))
                if answ == correct_answ
@@ -224,7 +229,7 @@ def quiz_handler(bot, update):
     reply_markup = InlineKeyboardMarkup([buttons])
     # bot.send_message(chat_id=update.message.chat.id, text=question_text,
     #                 reply_markup=reply_markup)
-    update.message.reply_text(text=rand_question.question_str,
+    update.message.reply_text(text=q_str,
                               reply_markup=reply_markup)
 
 
