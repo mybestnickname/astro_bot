@@ -265,12 +265,14 @@ def quiz_answer_handler(bot, update):
         user.correct_answers_counter += 1
     else:
         bot.answer_callback_query(query.id, text='Неверно.')
+    # переведём статус для пользователся
+    status = 'Верно!' if status == 'true' else 'Неверно.'
     session.commit()
-    bot_text = """
+    bot_text = """\n
     Вопрос: {}
     Ответил: {}
-    Статус: {}
-    Этот вопрос задавался {} раз
+    {}
+    Этот вопрос задавался {} раз(а)
     Правильных ответов: {}
     """.format(question.question_str, query.from_user.username, status,
                question.quest_counter, question.true_answ_counter)
