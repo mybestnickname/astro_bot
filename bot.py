@@ -274,7 +274,7 @@ def quiz_answer_handler(bot, update):
     {}
     Этот вопрос задавался {} раз(а)
     Правильных ответов: {}
-    """.format(question.question_str[:-1], query.from_user.username, status,
+    """.format(question.question_str, query.from_user.username, status,
                question.quest_counter, question.true_answ_counter)
     bot.edit_message_text(bot_text,
                           chat_id=query.message.chat_id,
@@ -359,11 +359,3 @@ if __name__ == '__main__':
     Base.metadata.create_all(engine)
     session = Session()
     main()
-
-    # добавить вопросов
-    # убрать api key бота для выдачи
-    # зарефакторить
-    # описание всех функций добавить
-    # не всратый вывод в телегу
-    # проверить, что всё робит как надо, затем выложить
-    # потом выкладывать
