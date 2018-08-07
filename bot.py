@@ -290,8 +290,8 @@ def show_user_quiz_res(bot, update):
     user = session.query(User).filter(
         User.telegram_id == update.message.from_user.id).first()
     if user:
-        update.message.reply_text('Привет юзернейм')
-        bot_text = """Пользователь {} последний раз отвечал на вопрос {}.
+        bot_text = """
+        Пользователь {} последний раз отвечал на вопрос {}.
         Всего ответов: {}
         Правильных: {}
             """.format(update.message.from_user.username,
